@@ -20,22 +20,20 @@
         }
       },
       scene: {
-        preload: preload,
-        create: create
+        preload,
+        create
       }
     };
   
     const game = new Phaser.Game(config);
   
-    function preload ()
-    {
+    function preload () {
       this.load.setBaseURL('/assets');
   
       this.load.image('map', 'map.png');
     }
   
-    function create ()
-    {
+    function create () {
       this.add.image(800 / 2, 555 / 2, 'map');
 
       let cellSize = 20;

@@ -11,14 +11,8 @@
   <script>
     const config = {
       type: Phaser.AUTO,
-      width: 800,
-      height: 555,
-      physics: {
-        default: 'arcade',
-        arcade: {
-          gravity: { y: 200 }
-        }
-      },
+      width: 820,
+      height: 457,
       scene: {
         preload,
         create
@@ -34,10 +28,10 @@
     }
   
     function create () {
-      this.add.image(800 / 2, 555 / 2, 'map');
+      this.add.image(config.width / 2, config.height / 2, 'map');
 
-      let cellSize = 20;
-      let outlineFillColor = '0xc5c5c5';
+      let cellSize = 12;
+      let outlineFillColor = '0x000000';
       let outlineFillOpacity = 0.1;
       // let angle = 60; TODO implement isometric rendering support
       this.add.grid(
@@ -47,6 +41,17 @@
         null, null, // fill
         outlineFillColor, outlineFillOpacity
       ); //.setAngle(angle);
+
+      this.input.on('pointermove', function (pointer) {
+        console.log('move', matchingCell(pointer.x, pointer.y, cellSize));
+      }, this);
+
+      function matchingCell(x, y, cellSize) {
+        return {
+          x: Math.floor(x / cellSize),
+          y: Math.floor(y / cellSize)
+        }
+      }
     }
   </script>
 </body>

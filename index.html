@@ -36,7 +36,19 @@
   
     function create ()
     {
-      this.add.image(400, 300, 'map');
+      this.add.image(800 / 2, 555 / 2, 'map');
+
+      let cellSize = 20;
+      let outlineFillColor = '0xc5c5c5';
+      let outlineFillOpacity = 0.1;
+      // let angle = 60; TODO implement isometric rendering support
+      this.add.grid(
+        config.width / 2, config.height / 2, // position
+        config.width, config.height,
+        cellSize, cellSize,
+        null, null, // fill
+        outlineFillColor, outlineFillOpacity
+      ); //.setAngle(angle);
     }
   </script>
 </body>

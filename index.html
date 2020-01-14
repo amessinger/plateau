@@ -14,8 +14,8 @@
       physics: {
         default: 'arcade'
       },
-      width: 820,
-      height: 457,
+      width: 1088,
+      height: 960,
       scene: {
         preload,
         create
@@ -33,7 +33,7 @@
     function create () {
       this.add.image(config.width / 2, config.height / 2, 'map');
 
-      let cellSize = 12;
+      let cellSize = 32;
       let outlineFillColor = '0x000000';
       let outlineFillOpacity = 0.1;
       // let angle = 60; TODO implement isometric rendering support

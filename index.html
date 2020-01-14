@@ -36,14 +36,13 @@
       let cellSize = 32;
       let outlineFillColor = '0x000000';
       let outlineFillOpacity = 0.1;
-      // let angle = 60; TODO implement isometric rendering support
       this.add.grid(
         config.width / 2, config.height / 2, // position
         config.width, config.height,
         cellSize, cellSize,
         null, null, // fill
         outlineFillColor, outlineFillOpacity
-      ); //.setAngle(angle);
+      );
 
       let hoverCell = this.add.rectangle(0, 0, cellSize, cellSize, '0x000000', 0.3);
 

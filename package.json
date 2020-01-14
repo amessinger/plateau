@@ -1,11 +1,9 @@
 {
   "scripts": {
-    "serve": "$(yarn bin)/http-server ."
+    "serve": "node server.js"
   },
   "dependencies": {
+    "express": "^4.17.1",
     "phaser": "^3.21.0"
-  },
-  "devDependencies": {
-    "http-server": "^0.12.1"
   }
 }

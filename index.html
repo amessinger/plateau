@@ -6,6 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
   <script src="node_modules/phaser/dist/phaser.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
   <script>
@@ -28,9 +29,13 @@
       this.load.setBaseURL('/assets');
   
       this.load.image('map', 'map.png');
+
+      this.data.set('socket', io.connect());
     }
   
     function create () {
+      let socket = this.data.get('socket');
+
       this.add.image(config.width / 2, config.height / 2, 'map');
 
       let cellSize = 32;
@@ -46,11 +51,34 @@
 
       let hoverCell = this.add.rectangle(0, 0, cellSize, cellSize, '0x000000', 0.3);
 
+      socket.on('hoverCell', function(position) {
+        let { x, y } = getCellPosition(position, cellSize);
+        hoverCell.setPosition(x, y);
+        updateHoverCell(game, position);
+      });
+
       this.input.on('pointermove', function (pointer) {
         let matchingCell = getMatchingCell(pointer, cellSize);
-        let { x, y } = getCellPosition(matchingCell, cellSize);
-        hoverCell.setPosition(x, y);
+
+        updateHoverCell(this, matchingCell, function() {
+          socket.emit('hoverCell', matchingCell);
+        })
       }, this);
+
+      function updateHoverCell(game, position, callback) {
+        if (!positionEquals(position, game.data.get('hoverCellPosition'))) {
+          let { x, y } = getCellPosition(position, cellSize);
+          hoverCell.setPosition(x, y);
+          game.data.set('hoverCellPosition', position);
+          if (callback) {
+            callback();
+          }
+        }
+      }
+
+      function positionEquals(p1, p2 ) {
+        return p1 && p2 && p1.x === p2.x && p1.y === p2.y;
+      }
 
       function getMatchingCell({ x, y }, cellSize) {
         return {

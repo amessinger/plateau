@@ -5,12 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
-  <script src="node_modules/phaser/dist/phaser.min.js"></script>
+  <script src="node_modules/phaser/dist/phaser.js"></script>
 </head>
 <body>
   <script>
     const config = {
       type: Phaser.AUTO,
+      physics: {
+        default: 'arcade'
+      },
       width: 820,
       height: 457,
       scene: {
@@ -42,14 +45,25 @@
         outlineFillColor, outlineFillOpacity
       ); //.setAngle(angle);
 
+      let hoverCell = this.add.rectangle(0, 0, cellSize, cellSize, '0x000000', 0.3);
+
       this.input.on('pointermove', function (pointer) {
-        console.log('move', matchingCell(pointer.x, pointer.y, cellSize));
+        let matchingCell = getMatchingCell(pointer, cellSize);
+        let { x, y } = getCellPosition(matchingCell, cellSize);
+        hoverCell.setPosition(x, y);
       }, this);
 
-      function matchingCell(x, y, cellSize) {
+      function getMatchingCell({ x, y }, cellSize) {
         return {
           x: Math.floor(x / cellSize),
           y: Math.floor(y / cellSize)
+        }
+      }
+
+      function getCellPosition({ x, y }, cellSize) {
+        return {
+          x: Math.round(x * cellSize + cellSize / 2),
+          y: Math.round(y * cellSize + cellSize / 2)
         }
       }
     }

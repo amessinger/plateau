@@ -18,15 +18,39 @@ const maps = [
   }
 ];
 
+const games = [
+  {
+    mapId: 0,
+    objects: [
+      {
+        name: 'character0',
+        image: 'object0.png',
+        x: 2,
+        y: 4
+      },
+      {
+        name: 'character1',
+        image: 'object1.png',
+        x: 5,
+        y: 8
+      }
+    ]
+  }
+];
+
 app.use('/assets', express.static(`${__dirname}/assets`));
 app.use('/node_modules', express.static(`${__dirname}/node_modules`));
 
-app.get('/',function(req, res){
+app.get('/', function(req, res) {
   res.sendFile(`${__dirname}/index.html`);
 });
 
-app.get('api/maps/:mapId',function({ params }, res){
+app.get('/api/maps/:mapId', function({ params }, res) {
   res.send(maps[params.mapId]);
+});
+
+app.get('/api/games/:gameId', function({ params }, res) {
+  res.send(games[params.gameId]);
 });
 
 server.listen(8080, function() {

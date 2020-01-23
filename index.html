@@ -10,13 +10,15 @@
 </head>
 <body>
   <script>
-    const mapId = (t = new URLSearchParams(window.location.search)).get('map') || 0;
+    const gameId = (t = new URLSearchParams(window.location.search)).get('game') || 0;
 
-    fetch(`api/maps/${mapId}`).then(response => response.json()).then(function({ image, width, height, cellSize }) {
-      start(image, width, height, cellSize);
+    fetch(`api/games/${gameId}`).then(response => response.json()).then(function({ mapId, objects }) {
+      fetch(`api/maps/${mapId}`).then(response => response.json()).then(function({ image, width, height, cellSize }) {
+        start(image, width, height, cellSize, objects);
+      });
     });
 
-    function start(image, width, height, cellSize) {
+    function start(image, width, height, cellSize, objects) {
       let config = {
         type: Phaser.AUTO,
         physics: {
@@ -36,6 +38,9 @@
         this.load.setBaseURL('/assets');
 
         this.load.image('map', image);
+        objects.forEach(({ name, image }) => {
+          this.load.image(name, image);
+        });
 
         this.data.set('socket', io.connect());
       }
@@ -43,8 +48,10 @@
       function create () {
         let socket = this.data.get('socket');
 
+        // Drawing the map
         this.add.image(width / 2, height / 2, 'map');
 
+        // Drawing the grid
         let outlineFillColor = '0x000000';
         let outlineFillOpacity = 0.1;
         this.add.grid(
@@ -55,14 +62,24 @@
           outlineFillColor, outlineFillOpacity
         );
 
+        // Drawing objects
+        objects.forEach(({ name, x, y }) => {
+          let { x: x1, y: y1 } = getCellPosition({ x, y }, cellSize);
+          this.add.image(x1, y1, name)
+            .setDisplaySize(cellSize, cellSize);
+        });
+
+        // Drawing hover cell
         let hoverCell = this.add.rectangle(0, 0, cellSize, cellSize, '0x000000', 0.3);
 
+        // Updating hover cell on socket receiving data
         socket.on('hoverCell', function(position) {
           let { x, y } = getCellPosition(position, cellSize);
           hoverCell.setPosition(x, y);
           updateHoverCell(game, hoverCell, position, cellSize);
         });
 
+        // Updating hover cell on mouse move
         this.input.on('pointermove', function (pointer) {
           let matchingCell = getMatchingCell(pointer, cellSize);
 

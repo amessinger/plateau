@@ -38,6 +38,7 @@ const games = [
   }
 ]
 
+app.use('/client.js', express.static(`${__dirname}/client.js`))
 app.use('/assets', express.static(`${__dirname}/assets`))
 app.use('/node_modules', express.static(`${__dirname}/node_modules`))
 
